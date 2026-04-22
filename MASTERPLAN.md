@@ -23,22 +23,28 @@ Prepare the codebase structure and core files.
 
 ---
 
-## Phase 1: MCP & Claude Connection (guide.sh Step 1)
+## Phase 1: MCP & Claude Connection (guide.sh Step 1) ✅
 
 Build the bridge between Claude Code and Blender.
 
-- [ ] Create `guide.sh` main script with menu system
-- [ ] Implement Step 1: "Setup MCP Connection"
-  - [ ] Verify Claude Code is installed
-  - [ ] Explain what MCP is (simple, user-friendly)
-  - [ ] Check if Blender is installed and accessible
-  - [ ] Create `.mcp-config.json` template
-  - [ ] Prompt user to authenticate Claude ↔ Blender connection
-  - [ ] Test MCP connection with simple validation
-  - [ ] Save connection status to `config/mcp-status.json`
-- [ ] Create `mcp/server.py` — Basic MCP server scaffold
-- [ ] Create `mcp/blender-bridge.py` — Handles Claude → Blender communication
-- [ ] Create `.mcp-config.json.example` template
+**Status**: COMPLETE
+
+- [x] Create `guide.sh` main script with menu system
+- [x] Implement Step 1: "Setup MCP Connection"
+  - [x] Verify Claude Code is installed
+  - [x] Explain what MCP is (simple, user-friendly)
+  - [x] Check if Blender is installed and accessible
+  - [x] Create `.mcp-config.json` template
+  - [x] Prompt user to authenticate Claude ↔ Blender connection
+  - [x] Test MCP connection with simple validation
+  - [x] Save connection status to `config/mcp-status.json`
+- [x] Create `mcp/server.py` — Basic MCP server scaffold
+- [x] Create `mcp/blender-bridge.py` — Handles Claude → Blender communication
+- [x] Create `.mcp-config.json.example` template
+- [x] Create `scripts/helpers.sh` — Reusable shell utilities
+- [x] Create `scripts/generate-mcp-config.py` — Auto-config generation
+- [x] Create `scripts/setup-env.sh` — Environment initialization
+- [x] Create `mcp/test-connection.py` — Connection validation
 
 ---
 
@@ -124,7 +130,7 @@ Final touches before launch.
 | Phase | Deliverable | Status |
 |-------|-------------|--------|
 | 0 | Repository structure, README, CLAUDE.md, MASTERPLAN | ✅ Complete |
-| 1 | MCP bridge, guide.sh Step 1 | ⏳ Pending |
+| 1 | MCP bridge, guide.sh Step 1, server & scripts | ✅ Complete |
 | 2 | Model initialization, templates, guide.sh Step 2 | ⏳ Pending |
 | 3 | Editing workflow, examples, guide.sh Step 3 | ⏳ Pending |
 | 4 | Validation, error handling, guide.sh Step 4 | ⏳ Pending |
@@ -139,35 +145,43 @@ claude-blender/
 ├── README.md ✅
 ├── CLAUDE.md ✅
 ├── MASTERPLAN.md ✅
-├── .gitignore
-├── guide.sh (main interactive script)
+├── .gitignore ✅
+├── guide.sh ✅ (main interactive script)
+├── .mcp-config.json.example ✅
+├── config/
+│   ├── mcp-status.json ✅ (generated)
+│   └── logs/ (generated at runtime)
 ├── scripts/
-│   ├── helpers.sh
-│   └── setup-env.sh
+│   ├── helpers.sh ✅
+│   ├── setup-env.sh ✅
+│   ├── generate-mcp-config.py ✅
+│   └── (more helpers in Phase 2+)
 ├── mcp/
-│   ├── server.py
-│   ├── blender-bridge.py
-│   └── error-handler.py
+│   ├── __init__.py ✅
+│   ├── server.py ✅
+│   ├── blender-bridge.py ✅
+│   ├── test-connection.py ✅
+│   └── error-handler.py (Phase 4)
 ├── blender/
-│   └── blender-script.py
+│   └── blender-script.py (Phase 2)
 ├── templates/
-│   ├── model-spec-template.md
-│   ├── blender-script-template.py
-│   ├── model-examples/
-│   │   ├── cube.md
-│   │   ├── sphere.md
-│   │   ├── character.md
-│   │   ├── spaceship.md
-│   │   └── landscape.md
+│   ├── model-spec-template.md (Phase 2)
+│   ├── blender-script-template.py (Phase 2)
+│   └── model-examples/ (Phase 2)
+│       ├── cube.md
+│       ├── sphere.md
+│       ├── character.md
+│       ├── spaceship.md
+│       └── landscape.md
 ├── docs/
-│   ├── WORKFLOW.md
-│   ├── EXAMPLES.md
-│   ├── PROMPTS.md
-│   ├── ARCHITECTURE.md
-│   ├── API.md
-│   ├── TROUBLESHOOTING.md
-│   └── CONTRIBUTING.md
-└── projects/ (user-generated projects go here)
+│   ├── WORKFLOW.md (Phase 3)
+│   ├── EXAMPLES.md (Phase 3)
+│   ├── PROMPTS.md (Phase 3)
+│   ├── ARCHITECTURE.md (Phase 5)
+│   ├── API.md (Phase 5)
+│   ├── TROUBLESHOOTING.md (Phase 4)
+│   └── CONTRIBUTING.md (Phase 5)
+└── projects/ (user-generated projects go here, Phase 2)
 ```
 
 ---
