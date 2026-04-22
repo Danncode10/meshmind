@@ -106,27 +106,41 @@ step_1_setup_mcp() {
 
   cat << 'EOF'
 
-  ① Open Blender and do a Save As into this project folder
-    File → Save As → navigate here → save your .blend file
+  ─── PART A: Install the Blender MCP Add-on ──────────────────────────────
 
-  ② Enable the Blender MCP Add-on
-    Edit → Preferences → Add-ons → search "Blender MCP" → check the box ✓
+  ① Download the Blender MCP addon ZIP file
+    → Go to: https://github.com/ahujasid/blender-mcp
+    → Click "Code" → "Download ZIP"  (or download blender_mcp.zip directly)
 
-  ③ Open the MCP Side Panel
-    Press  N  on your keyboard → look for the "Blender MCP" tab on the right
+  ② Install it in Blender
+    Edit → Preferences → Add-ons
+    Click the  ▾ dropdown (top-right corner) → "Install from Disk..."
+    → Select the ZIP you just downloaded
 
-  ④ (Optional) Use Assets from Sketchfab
+  ③ Enable it
+    In the Add-ons list, uncheck "Enabled Only" so you can see all addons
+    Search for "Blender MCP" → check the box ✓ to enable it
+
+  ─── PART B: Save your file & Connect ────────────────────────────────────
+
+  ④ Save As into this project folder
+    File → Save As → navigate to your MeshMind folder → save your .blend file
+
+  ⑤ Open the MCP Side Panel
+    Press  N  on your keyboard inside the 3D Viewport
+    → Look for the "Blender MCP" tab on the right side panel
+
+  ⑥ (Optional) Use Assets from Sketchfab
     Check "Use Asset from Sketchfab"
     To get your API key:
-      → Go to sketchfab.com → Settings → Password & API → copy your API key
-      → Paste it into the Sketchfab API Key field
+      → sketchfab.com → Settings → Password & API → copy key → paste here
 
-  ⑤ (Optional) Enable Hyper 3D Rodin Model Generation
+  ⑦ (Optional) Enable Hyper 3D Rodin Model Generation
     Check "Hyper 3D Rodin 3D Model Generation"
-    → Set your free trial API key from the Hyper 3D Rodin dashboard
+    → Paste your free trial API key from the Hyper 3D Rodin dashboard
 
-  ⑥ Click  "Connect MCP Server"  in the Blender MCP panel
-    You should see a green "Connected" status appear
+  ⑧ Click  "Connect MCP Server"
+    → You should see a green "Connected" status appear ✓
 
 EOF
 
