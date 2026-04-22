@@ -92,50 +92,45 @@ step_1_setup_mcp() {
   show_header
   log_section "STEP 1 — Setup MCP Connection"
 
-  log_info "Configuring the Model Context Protocol (MCP) bridge"
-  log_info "between Claude Code and Blender.\n"
-
-  # Check Claude Code
-  log_info "Checking Claude Code installation..."
-  if command -v claude &> /dev/null; then
-    log_success "Claude Code CLI found"
-  else
-    log_warning "Claude Code CLI not found in PATH"
-    log_info "Install it from: https://github.com/anthropics/claude-code/releases\n"
-    if ! prompt_yes_no "Continue anyway?"; then
-      return 1
-    fi
+  # Prerequisite check
+  echo -e "  ${BOLD}Before you begin:${NC}"
+  echo -e "  Make sure you have the ${CYAN}Blender app${NC} installed on your machine."
+  echo -e "  Download it at: ${CYAN}https://www.blender.org/download/${NC}\n"
+  if ! prompt_yes_no "Do you have Blender installed?"; then
+    log_info "Install Blender 4.0+ first, then re-run this step."
+    return 1
   fi
 
-  # Explain MCP
   echo ""
-  log_info "What is MCP?"
-  echo ""
-  cat << 'EOF'
-    MCP (Model Context Protocol) creates a live bridge between Claude and
-    Blender so you can describe 3D models in plain language:
+  log_section "Inside Blender — Follow These Steps"
 
-      1. Describe your model → "A futuristic spaceship with glowing wings"
-      2. Claude generates Blender Python code automatically
-      3. MCP sends that code directly to Blender
-      4. Blender executes it and creates your 3D model
-      5. Iterate with follow-up prompts — no manual coding needed
+  cat << 'EOF'
+
+  ① Open Blender and do a Save As into this project folder
+    File → Save As → navigate here → save your .blend file
+
+  ② Enable the Blender MCP Add-on
+    Edit → Preferences → Add-ons → search "Blender MCP" → check the box ✓
+
+  ③ Open the MCP Side Panel
+    Press  N  on your keyboard → look for the "Blender MCP" tab on the right
+
+  ④ (Optional) Use Assets from Sketchfab
+    Check "Use Asset from Sketchfab"
+    To get your API key:
+      → Go to sketchfab.com → Settings → Password & API → copy your API key
+      → Paste it into the Sketchfab API Key field
+
+  ⑤ (Optional) Enable Hyper 3D Rodin Model Generation
+    Check "Hyper 3D Rodin 3D Model Generation"
+    → Set your free trial API key from the Hyper 3D Rodin dashboard
+
+  ⑥ Click  "Connect MCP Server"  in the Blender MCP panel
+    You should see a green "Connected" status appear
 
 EOF
 
-  # Check Blender
-  log_info "Checking Blender installation..."
-  if command -v blender &> /dev/null; then
-    local blender_version
-    blender_version=$(blender --version 2>&1 | head -1)
-    log_success "Blender found: ${blender_version}"
-  else
-    log_warning "Blender not found in PATH"
-    log_info "Install Blender 4.0+: https://www.blender.org/download/\n"
-    if ! prompt_yes_no "Continue anyway?"; then
-      return 1
-    fi
-  fi
+  log_success "Blender MCP is now connected to MeshMind!"
 
   # Generate MCP config
   echo ""
