@@ -1,19 +1,21 @@
 #!/bin/bash
 
 ################################################################################
-# Claude 3D — Interactive Setup Guide
+# MeshMind — Interactive Setup Guide
 # Main entry point for users to set up Claude + Blender + MCP
 ################################################################################
 
 set -e
 
-# Colors for better readability
+# Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+MAGENTA='\033[0;35m'
+BOLD='\033[1m'
+NC='\033[0m'
 
 # Directories
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -22,44 +24,62 @@ MCP_DIR="${SCRIPT_DIR}/mcp"
 PROJECTS_DIR="${SCRIPT_DIR}/projects"
 SCRIPTS_DIR="${SCRIPT_DIR}/scripts"
 
-# Ensure config directory exists
 mkdir -p "${CONFIG_DIR}"
+
+################################################################################
+# Header
+################################################################################
+
+show_header() {
+  clear
+  echo -e "${BLUE}${BOLD}"
+  cat << "EOF"
+  __  __           _       __  __ _           _
+ |  \/  | ___  ___| |__   |  \/  (_)_ __   __| |
+ | |\/| |/ _ \/ __| '_ \  | |\/| | | '_ \ / _` |
+ | |  | |  __/\__ \ | | | | |  | | | | | | (_| |
+ |_|  |_|\___||___/_| |_| |_|  |_|_|_| |_|\__,_|
+EOF
+  echo -e "${NC}"
+  echo -e "${CYAN}  AI-Powered 3D Modeling — Describe it. Claude builds it.${NC}"
+  echo -e "${MAGENTA}  ─────────────────────────────────────────────────────${NC}\n"
+}
 
 ################################################################################
 # Utility Functions
 ################################################################################
 
-log_header() {
-  echo -e "\n${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  echo -e "${CYAN}$1${NC}"
-  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
+log_section() {
+  echo -e "\n${BLUE}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo -e "${CYAN}${BOLD}  $1${NC}"
+  echo -e "${BLUE}${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
 }
 
 log_info() {
-  echo -e "${CYAN}ℹ ${NC}$1"
+  echo -e "${CYAN}  ℹ  ${NC}$1"
 }
 
 log_success() {
-  echo -e "${GREEN}✅ $1${NC}"
+  echo -e "${GREEN}  ✅ $1${NC}"
 }
 
 log_warning() {
-  echo -e "${YELLOW}⚠️  $1${NC}"
+  echo -e "${YELLOW}  ⚠️  $1${NC}"
 }
 
 log_error() {
-  echo -e "${RED}❌ $1${NC}"
+  echo -e "${RED}  ❌ $1${NC}"
 }
 
 prompt_yes_no() {
   local prompt="$1"
   local response
   while true; do
-    read -p "$(echo -e ${CYAN}${prompt}${NC} [y/n]: )" -r response
+    read -p "$(echo -e "  ${CYAN}${prompt}${NC} [y/n]: ")" -r response
     case "$response" in
       [yY][eE][sS]|[yY]) return 0 ;;
       [nN][oO]|[nN]) return 1 ;;
-      *) echo "Please answer yes or no." ;;
+      *) echo "  Please answer yes or no." ;;
     esac
   done
 }
@@ -69,42 +89,41 @@ prompt_yes_no() {
 ################################################################################
 
 step_1_setup_mcp() {
-  log_header "STEP 1: Setup MCP Connection"
+  show_header
+  log_section "STEP 1 — Setup MCP Connection"
 
-  log_info "This step will configure the Model Context Protocol (MCP) bridge"
+  log_info "Configuring the Model Context Protocol (MCP) bridge"
   log_info "between Claude Code and Blender.\n"
 
-  # Check Claude Code installation
+  # Check Claude Code
   log_info "Checking Claude Code installation..."
   if command -v claude &> /dev/null; then
     log_success "Claude Code CLI found"
   else
     log_warning "Claude Code CLI not found in PATH"
-    log_info "Please ensure Claude Code is installed:"
-    log_info "  https://github.com/anthropics/claude-code/releases\n"
+    log_info "Install it from: https://github.com/anthropics/claude-code/releases\n"
     if ! prompt_yes_no "Continue anyway?"; then
       return 1
     fi
   fi
 
   # Explain MCP
-  log_info "What is MCP?\n"
+  echo ""
+  log_info "What is MCP?"
+  echo ""
   cat << 'EOF'
-  MCP (Model Context Protocol) is a standard way for AI systems like Claude
-  to communicate with external tools and services. In this case, it creates a
-  bridge between Claude Code and Blender so that:
+    MCP (Model Context Protocol) creates a live bridge between Claude and
+    Blender so you can describe 3D models in plain language:
 
-  1. You describe a 3D model in natural language
-  2. Claude generates Blender Python code
-  3. The MCP server sends that code to Blender
-  4. Blender executes the code and creates your model
-  5. Results are shown back to Claude
-
-  This allows seamless conversation-driven 3D modeling!
+      1. Describe your model → "A futuristic spaceship with glowing wings"
+      2. Claude generates Blender Python code automatically
+      3. MCP sends that code directly to Blender
+      4. Blender executes it and creates your 3D model
+      5. Iterate with follow-up prompts — no manual coding needed
 
 EOF
 
-  # Check Blender installation
+  # Check Blender
   log_info "Checking Blender installation..."
   if command -v blender &> /dev/null; then
     local blender_version
@@ -112,47 +131,51 @@ EOF
     log_success "Blender found: ${blender_version}"
   else
     log_warning "Blender not found in PATH"
-    log_info "Please install Blender 4.0 or later:"
-    log_info "  https://www.blender.org/download/\n"
+    log_info "Install Blender 4.0+: https://www.blender.org/download/\n"
     if ! prompt_yes_no "Continue anyway?"; then
       return 1
     fi
   fi
 
-  # Create MCP config template
-  log_info "Creating MCP configuration..."
-  python3 "${SCRIPTS_DIR}/generate-mcp-config.py" || {
-    log_warning "Could not auto-generate MCP config"
-    log_info "Using default template instead"
-  }
+  # Generate MCP config
+  echo ""
+  log_info "Generating MCP configuration..."
+  if python3 "${SCRIPTS_DIR}/generate-mcp-config.py"; then
+    log_success "MCP config created: .mcp-config.json"
+  else
+    log_warning "Could not auto-generate MCP config — using defaults"
+  fi
 
   # Save connection status
   local status_file="${CONFIG_DIR}/mcp-status.json"
-  cat > "${status_file}" << 'EOF'
+  local timestamp
+  timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+  cat > "${status_file}" << EOF
 {
   "configured": true,
-  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+  "timestamp": "${timestamp}",
   "mcp_server_url": "http://localhost:5000",
   "blender_bridge": "localhost:5001",
   "status": "ready",
   "last_test": null
 }
 EOF
+  log_success "Connection status saved: config/mcp-status.json"
 
-  log_success "MCP configuration saved to ${CONFIG_DIR}/mcp-status.json"
-
-  # Test MCP connection
-  log_info "Testing MCP connection...\n"
+  # Test connection
+  echo ""
+  log_info "Running connection tests..."
+  echo ""
   if python3 "${MCP_DIR}/test-connection.py" 2>/dev/null; then
-    log_success "MCP connection test passed!"
+    log_success "All connection tests passed!"
   else
-    log_warning "Could not test MCP connection"
-    log_info "This is normal on first setup. The connection will be"
-    log_info "established when you start using Claude Code.\n"
+    log_warning "Some tests returned warnings (normal on first setup)"
+    log_info "The connection will activate when Claude Code runs.\n"
   fi
 
-  log_success "Step 1 complete: MCP Connection configured!"
-  log_info "Next: Run 'bash guide.sh' and select Step 2"
+  echo ""
+  log_success "Step 1 complete — MCP bridge is configured!"
+  log_info "Run guide.sh again and choose Step 2 to create your first project.\n"
 }
 
 ################################################################################
@@ -160,39 +183,29 @@ EOF
 ################################################################################
 
 show_menu() {
-  log_header "Claude 3D — Setup Guide"
+  show_header
+  echo -e "${BOLD}  Getting Started Guide${NC}"
+  echo -e "  Use ${CYAN}number keys${NC} to select a step\n"
 
-  cat << 'EOF'
-Choose a setup step:
+  echo -e "  ${CYAN}[1]${NC}  Setup MCP Connection          ${GREEN}← Start here${NC}"
+  echo -e "  ${CYAN}[2]${NC}  Create Your 3D Model Project  ${YELLOW}(coming soon)${NC}"
+  echo -e "  ${CYAN}[3]${NC}  Chat with Claude to Edit       ${YELLOW}(coming soon)${NC}"
+  echo -e "  ${CYAN}[4]${NC}  Launch Checklist               ${YELLOW}(coming soon)${NC}"
+  echo -e "  ${CYAN}[0]${NC}  Exit\n"
 
-  [1] Setup MCP Connection (recommended first)
-  [2] Create Your 3D Model Project
-  [3] Chat with Claude to Edit (coming soon)
-  [4] Launch Checklist (coming soon)
-  [0] Exit
-
-EOF
-  read -p "$(echo -e ${CYAN}Select option${NC} [0-4]: )" -r choice
+  read -p "$(echo -e "  ${CYAN}Select option${NC} [0-4]: ")" -r choice
 
   case "$choice" in
-    1)
-      step_1_setup_mcp
-      ;;
-    2)
-      log_info "Step 2 not yet implemented. Check back soon!"
-      ;;
-    3)
-      log_info "Step 3 not yet implemented. Check back soon!"
-      ;;
-    4)
-      log_info "Step 4 not yet implemented. Check back soon!"
-      ;;
+    1) step_1_setup_mcp ;;
+    2) log_warning "Step 2 coming soon — stay tuned!" ;;
+    3) log_warning "Step 3 coming soon — stay tuned!" ;;
+    4) log_warning "Step 4 coming soon — stay tuned!" ;;
     0)
-      log_info "Exiting. Happy modeling!"
+      echo -e "\n  ${CYAN}Happy modeling! ✨${NC}\n"
       exit 0
       ;;
     *)
-      log_error "Invalid option. Please try again."
+      log_error "Invalid option. Try again."
       ;;
   esac
 
@@ -200,7 +213,7 @@ EOF
   if prompt_yes_no "Return to menu?"; then
     show_menu
   else
-    log_info "Exiting. Happy modeling!"
+    echo -e "\n  ${CYAN}Happy modeling! ✨${NC}\n"
     exit 0
   fi
 }
@@ -210,10 +223,6 @@ EOF
 ################################################################################
 
 main() {
-  log_header "Welcome to Claude 3D"
-  log_info "This guide will help you set up Claude + Blender + MCP"
-  log_info "and get started creating 3D models with natural language.\n"
-
   show_menu
 }
 
