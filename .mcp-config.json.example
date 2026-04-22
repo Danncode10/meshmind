@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "mcpServers": {
+    "claude-3d": {
+      "command": "python3",
+      "args": [
+        "/path/to/mcp/server.py"
+      ],
+      "env": {
+        "BLENDER_PATH": "/Applications/Blender.app/Contents/MacOS/Blender",
+        "MCP_HOST": "localhost",
+        "MCP_PORT": "5000",
+        "BLENDER_BRIDGE_HOST": "localhost",
+        "BLENDER_BRIDGE_PORT": "5001"
+      },
+      "disabled": false
+    }
+  },
+  "settings": {
+    "autoStartServers": true,
+    "serverTimeout": 30,
+    "logLevel": "info"
+  },
+  "claude3d": {
+    "projectsDirectory": "./projects",
+    "templatesDirectory": "./templates",
+    "configDirectory": "./config",
+    "blenderVersionRequired": "4.0"
+  }
+}
